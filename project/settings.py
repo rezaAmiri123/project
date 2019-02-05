@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -122,3 +123,5 @@ STATIC_URL = '/static/'
 STATICFILE_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 django_heroku.settings(locals())
+
+AUTH_USER_MODEL = 'account.Account'
