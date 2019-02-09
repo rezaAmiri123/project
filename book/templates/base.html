@@ -5,8 +5,16 @@
     <title>Title</title>
 </head>
 <body>
-{% block content %}
-
-{%endblock%}
+<a href="/book/">Book list</a>
+<a href="/book/create/">Create book</a>
+<a href="/book/authors/">Author list</a>
+<a href="/book/author/create/">Create author</a>
+<a href="/book/publishers/">Publisher list</a>
+<a href="/book/publisher/create/">Create publisher</a>
+<a href="{% url 'account:login' %}">Login</a>
+<a href="{% url 'account:signup' %}">Signup</a>
+<a href="{% url 'account:logout' %}">Logout</a>
+<p></p>
+{% block content %}{% endblock %}
 </body>
 </html>

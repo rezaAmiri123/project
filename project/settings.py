@@ -125,5 +125,10 @@ STATICFILE_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 
 AUTH_USER_MODEL = 'account.Account'
+LOGIN_URL = 'account:login'
+LOGOUT_URL = 'account:logout'
+LOGOUT_REDIRECT_URL = 'book:book_list'
+LOGIN_REDIRECT_URL = 'book:book_list'
+
 
 django_heroku.settings(locals())

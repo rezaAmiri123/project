@@ -56,6 +56,7 @@ def author_update(request, pk):
     return render(request, 'authors/author_create.html', context=dict(form=form))
 
 
+@login_required()
 def author_delete(request, pk):
     author = get_object_or_404(Author, pk=pk)
     if request.method == 'POST':
@@ -103,7 +104,7 @@ class PublisherUpdate(generic.UpdateView):
         return queryset.filter(pk=self.kwargs.get('pk'))
 
     def form_valid(self, form):
-        if not self.object.owner == self.request.user:
+        if not self.get_object().owner == self.request.user:
             return HttpResponseForbidden("you must be owner")
         form.save()
         return redirect(reverse('book:publisher_list'))
@@ -124,3 +125,54 @@ class PublisherDelete(generic.DeleteView):
         return redirect(reverse('book:publisher_list'))
 
 
+class BookList(generic.ListView):
+    template_name = 'books/book_list.html'
+    context_object_name = 'books'
+    paginate_by = 5
+
+    def get_queryset(self):
+        return Book.objects.all()
+
+
+class BookCreate(generic.CreateView):
+    template_name = 'books/book_create.html'
+    model = Book
+    context_object_name = 'book'
+    form_class = forms.BookForm
+    success_url = '/book/'
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super(BookCreate, self).form_valid(form)
+
+
+class BookUpdate(generic.UpdateView):
+    template_name = 'books/book_create.html'
+    model = Book
+    context_object_name = 'form'
+    form_class = forms.BookForm
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(pk=self.kwargs.get('pk'))
+
+    def form_valid(self, form):
+        if not self.get_object().owner == self.request.user:
+            return HttpResponseForbidden("you must be owner")
+        form.save()
+        return redirect(reverse('book:book_list'))
+
+
+class BookDelete(generic.DeleteView):
+    template_name = 'books/book_delete.html'
+    model = Book
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(pk=self.kwargs.get('pk'))
+
+    def post(self, request, *args, **kwargs):
+        if not self.get_object().owner == self.request.user:
+            return HttpResponseForbidden("you must be owner")
+        self.get_object().delete()
+        return redirect(reverse('book:book_list'))
